@@ -1,0 +1,7 @@
+# dsh-timekeeper bundle patch
+# Inserts this package into the DSH bundle tree.
+# NOTE: the plugin-manager precheck greps the "id" line with a regex, so keep
+# one entry per line exactly as below and do not add trailing comments.
+- insert:
+    - id: dsh-timekeeper
+      name: 'dsh-timekeeper'
