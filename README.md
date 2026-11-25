@@ -23,7 +23,7 @@ DeepSeek Harness 时间账本：从进入 DSH 起自动记录时间投入，并�
 
 | 文件 | 作用 |
 | --- | --- |
-| `lib/index.js` | 宿主半侧 Cordis 插件：计时心跳（天+小时分桶）、数据落盘、统计/目标/专注/导入导出/分享路由、`/usage` 命令 |
+| `lib/index.js` | 宿主半侧 Cordis 插件：计时心跳、数据落盘、统计/目标/专注/导入导出/分享路由、`/usage` 命令 |
 | `lib/client.js` | 浏览器半侧：把「时间账本」标签页注册进右侧栏，渲染面板、番茄钟、分享卡片 canvas 绘制 |
 | `cordis.patch.yml` | bundle patch，把插件插入配置树 |
 | `package.json` | `dsh.bundle.patch` + `dsh.client`（platform: web）声明 |
@@ -32,8 +32,8 @@ DeepSeek Harness 时间账本：从进入 DSH 起自动记录时间投入，并�
 
 使用数据落盘到 DSH 主目录（`$DSH_HOME`，默认 `~/.dsh`）下的：
 
-- `dsh-timekeeper/usage.json` —— `days`（按天秒数）、`hours`（按小时分桶）、`projects`（按天 × 项目秒数）、`focus`（专注）、`goal`（每日目标）、`session`（当前这段连续使用的起止时刻）、`shareCount`
-- `dsh-timekeeper/client-diag.jsonl` —— 客户端诊断日志（排查渲染问题用）
+- `dsh-timekeeper/usage.json` —— `days`、`hours`、`projects`、`focus`、`goal`、`session`、`shareCount`
+- `dsh-timekeeper/client-diag.jsonl` —— 客户端诊断日志
 - `dsh-timekeeper/share/usage-card-<时间戳>.png` —— 分享卡片导出的图片
 
 > 兼容性：v0.1 的旧 `usage.json` 只有 `days`，加载时会自动升到 v2 结构，历史天数据保留。
@@ -68,29 +68,29 @@ plugin_manager action=install_bundle target=D:\DSH\DSHTask\dsh-timekeeper
 
 ## 使用
 
-- 打开右侧栏，点「时间账本」入口（首次会自动打开一次），面板可上下滚动
+- 打开右侧栏，点时间账本入口，面板可上下滚动
 - 目标：在「今日目标」行填小时数 → 保存目标
 - 专注：选 25/45/60 分钟 → 开始专注；完成自动记入「今日专注」
 - 分享：选主题与形状 → 生成分享卡片，图片会保存到 `~/.dsh/dsh-timekeeper/share/` 并显示路径
-- 备份：数据管理 → 导出 JSON（同时下载文件）；导入时把 JSON 粘进文本框再点「导入备份」
+- 备份：数据管理 → 导出 JSON；导入时把 JSON 粘进文本框再点导入备份
 - 输入框输入 `/usage` 查看文字小结
 
 ## 调试
 
 - `GET /dsh-timekeeper/client-diag` 返回最近 80 条客户端诊断事件
 - 浏览器侧加载/注册中每一步都会打点：`module:` → `apply:` → `registerTab:` → `autoOpen:` → `panel:` → `share:` → `focus:`
-- 离线单测（不需要浏览器/不用重启 DSH）：
+- 离线单测：
   - `node probe-host-v3.mjs` —— 用假 ctx 跑宿主 `apply()`，覆盖全部 HTTP 路由与 `/usage` 命令
   - `node probe-client-v3.mjs` —— 最小 React 桩渲染面板，校验各区块都渲染出来
   - `node probe-client-interact.mjs` —— 点击分享/保存目标/导出/番茄钟/清空，并逐个校验 4 主题 × 2 形状的画布尺寸与文字
   - `node probe-stats-v3.mjs` —— 合成数据的统计口径自测
-  - `node probe-live-host.mjs 6302` + `node verify-live.mjs 6302` —— 用真实 `usage.json` 的副本起真实 HTTP 服务，跑全部端点（36 项）；重启 DSH 后可直接对线上端口执行 `verify-live.mjs`（想连清空用例一起跑就加 `ALLOW_RESET=1`，只建议在副本上开）
+  - `node probe-live-host.mjs 6302` + `node verify-live.mjs 6302` —— 用真实 `usage.json` 的副本起真实 HTTP 服务，跑全部端点；重启 DSH 后可直接对线上端口执行 `verify-live.mjs`
 
-> 注意：**宿主半侧改代码需要重启 DSH 才会生效**（路由/命令在 `apply` 里注册）；浏览器半侧 `lib/client.js` 改动会自动热重载。
+> 注意：**宿主半侧改代码需要重启 DSH 才会生效**；浏览器半侧 `lib/client.js` 改动会自动热重载。
 
 ## 路线图
 
 - v0.1 ✅：自动计时 + 四维面板 + 热力图 + 连续天数
-- v0.2 ✅：可分享的年度总结卡片（1080×1520 PNG）
+- v0.2 ✅：可分享的年度总结卡片
 - v0.3 ✅：环比、时段洞察、成就徽章、每日目标、番茄钟、分享主题/方形、数据导入导出、项目/工作区归属统计
 - v0.4：跨设备同步、周报页面、更多徽章与主题
