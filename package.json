@@ -60,12 +60,12 @@
   },
   "license": "MIT",
   "author": "dsh-timekeeper contributors",
-  "homepage": "https://github.com/OWNER/dsh-timekeeper#readme",
+  "homepage": "https://github.com/01kalival/dsh-timekeeper#readme",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/OWNER/dsh-timekeeper.git"
+    "url": "git+https://github.com/01kalival/dsh-timekeeper.git"
   },
   "bugs": {
-    "url": "https://github.com/OWNER/dsh-timekeeper/issues"
+    "url": "https://github.com/01kalival/dsh-timekeeper/issues"
   }
 }
